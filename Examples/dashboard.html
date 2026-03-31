@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MT4 TCP Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .status.connected {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .status.disconnected {
+            background: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%);
+            color: white;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .connected .status-indicator {
+            background: white;
+        }
+
+        .disconnected .status-indicator {
+            background: white;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .data-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .data-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .data-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .data-value.positive {
+            color: #11998e;
+        }
+
+        .data-value.negative {
+            color: #cb2d3e;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+        }
+
+        .timestamp {
+            font-size: 11px;
+            color: #999;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .quick-messages {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 MT4 TCP Dashboard</h1>
+
+        <!-- Estado de Conexión -->
+        <div id="status" class="status disconnected">
+            <span class="status-indicator"></span>
+            <span id="status-text">⚫ Desconectado</span>
+        </div>
+
+        <!-- Datos de Mercado -->
+        <div class="card">
+            <h2>📊 Datos de Mercado</h2>
+            <div class="data-grid">
+                <div class="data-item">
+                    <div class="data-label">Símbolo</div>
+                    <div class="data-value" id="symbol">-</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Spread</div>
+                    <div class="data-value" id="spread">-</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Bid</div>
+                    <div class="data-value" id="bid">-</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Ask</div>
+                    <div class="data-value" id="ask">-</div>
+                </div>
+            </div>
+            <div class="timestamp" id="market-timestamp">Última actualización: -</div>
+        </div>
+
+        <!-- Datos de Cuenta -->
+        <div class="card">
+            <h2>💰 Datos de Cuenta</h2>
+            <div class="data-grid">
+                <div class="data-item">
+                    <div class="data-label">Balance</div>
+                    <div class="data-value" id="balance">-</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Equity</div>
+                    <div class="data-value" id="equity">-</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Profit Flotante</div>
+                    <div class="data-value" id="profit">-</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Margin</div>
+                    <div class="data-value" id="margin">-</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enviar Comando -->
+        <div class="card">
+            <h2>💬 Enviar Comando a MT4</h2>
+            <div class="input-group">
+                <input type="text" id="message" placeholder="Escribe un mensaje para mostrar en MT4...">
+                <button class="btn-primary" onclick="sendAlert()">Enviar Alerta</button>
+            </div>
+            <div class="quick-messages">
+                <button class="btn-success btn-small" onclick="quickMessage('¡Hola desde la web!')">¡Hola!</button>
+                <button class="btn-success btn-small" onclick="quickMessage('Revisar operaciones pendientes')">Revisar Ops</button>
+                <button class="btn-success btn-small" onclick="quickMessage('Precio objetivo alcanzado')">Target</button>
+                <button class="btn-success btn-small" onclick="quickMessage('Stop Loss cercano - atención')">SL Cercano</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Actualizar datos cada segundo
+        setInterval(updateDashboard, 1000);
+
+        // Actualizar el dashboard
+        async function updateDashboard() {
+            try {
+                const response = await fetch('/data');
+                const data = await response.json();
+
+                updateStatus(data.connected);
+                updateMarketData(data);
+                updateAccountData(data);
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Actualizar estado de conexión
+        function updateStatus(connected) {
+            const statusEl = document.getElementById('status');
+            const statusText = document.getElementById('status-text');
+
+            if(connected) {
+                statusEl.className = 'status connected';
+                statusText.textContent = '🟢 Conectado';
+            } else {
+                statusEl.className = 'status disconnected';
+                statusText.textContent = '⚫ Desconectado';
+            }
+        }
+
+        // Actualizar datos de mercado
+        function updateMarketData(data) {
+            document.getElementById('symbol').textContent = data.symbol || '-';
+            document.getElementById('bid').textContent = data.bid || '-';
+            document.getElementById('ask').textContent = data.ask || '-';
+            document.getElementById('spread').textContent = data.spread !== null ? data.spread : '-';
+            document.getElementById('market-timestamp').textContent =
+                'Última actualización: ' + (data.lastUpdate ? new Date(data.lastUpdate).toLocaleTimeString() : '-');
+        }
+
+        // Actualizar datos de cuenta
+        function updateAccountData(data) {
+            const balanceEl = document.getElementById('balance');
+            const equityEl = document.getElementById('equity');
+            const profitEl = document.getElementById('profit');
+            const marginEl = document.getElementById('margin');
+
+            balanceEl.textContent = formatNumber(data.balance);
+            equityEl.textContent = formatNumber(data.equity);
+            marginEl.textContent = formatNumber(data.margin);
+
+            if(data.profit !== null) {
+                profitEl.textContent = formatNumber(data.profit);
+                profitEl.className = 'data-value ' + (parseFloat(data.profit) >= 0 ? 'positive' : 'negative');
+            } else {
+                profitEl.textContent = '-';
+                profitEl.className = 'data-value';
+            }
+        }
+
+        // Formatear número
+        function formatNumber(value) {
+            if(value === null || value === undefined) return '-';
+            return parseFloat(value).toFixed(2);
+        }
+
+        // Enviar alerta a MT4
+        async function sendAlert() {
+            const input = document.getElementById('message');
+            const message = input.value.trim();
+
+            if(!message) {
+                alert('Por favor escribe un mensaje');
+                return;
+            }
+
+            await sendCommand('alert', message);
+            input.value = '';
+        }
+
+        // Mensaje rápido
+        function quickMessage(msg) {
+            document.getElementById('message').value = msg;
+        }
+
+        // Enviar comando al servidor
+        async function sendCommand(type, message) {
+            try {
+                const response = await fetch('/command', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ type, message })
+                });
+
+                const result = await response.json();
+
+                if(result.success) {
+                    if(result.sent) {
+                        alert('✅ Comando enviado a MT4');
+                    } else if(result.queued) {
+                        alert('📝 Comando encolado (MT4 no conectado)');
+                    }
+                } else {
+                    alert('❌ Error al enviar comando');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión con el servidor');
+            }
+        }
+
+        // Permitir Enter para enviar
+        document.getElementById('message').addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') {
+                sendAlert();
+            }
+        });
+    </script>
+</body>
+</html>

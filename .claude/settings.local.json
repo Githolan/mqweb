@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"C:\\\\Users\\\\holan\\\\.claude\\\\projects\")",
+      "Bash(dir \"C:\\\\Users\\\\holan\\\\.claude\\\\projects\\\\c--Users-holan-OneDrive-GitHub-MQL4-WEB\")",
+      "Bash(dir \"C:\\\\Users\\\\holan\\\\.claude\\\\projects\\\\c--Users-holan-OneDrive-GitHub-MQL4-WEB\\\\69629bdd-3c6f-47ea-8e7d-8dbf03ba0a6e\")",
+      "Bash(start http://localhost:3001)",
+      "Bash(curl -s http://localhost:3001)",
+      "Bash(explorer.exe \"http://localhost:3001\")",
+      "Bash(rundll32 url.dll,FileProtocolHandler \"http://localhost:3001\")",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":3030 :8080\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File ./Scripts/dev.ps1 status)",
+      "Bash(powershell -ExecutionPolicy Bypass -File ./Scripts/dev.ps1 start)",
+      "Bash(curl -s http://localhost:3030/health)",
+      "Bash(powershell -ExecutionPolicy Bypass -File ./Scripts/dev.ps1 stop)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"cd ''c:/Users/holan/OneDrive/GitHub/MQL4-WEB''; ./Scripts/dev.ps1 stop\")"
+    ]
+  }
+}

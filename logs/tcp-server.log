@@ -1,0 +1,75 @@
+╔═══════════════════════════════════════════════════════════╗
+║         MT4 TCP Server Iniciado                          ║
+╚═══════════════════════════════════════════════════════════╝
+🚀 Servidor TCP escuchando en puerto 8080
+   - MT4 debe conectarse a: tcp://localhost:8080
+
+🌐 Dashboard disponible en:
+   - Local: http://localhost:3030
+   - Red: http://localhost:3030
+
+✅ Servidor listo para recibir conexiones de MT4
+
+Press Ctrl+C to stop
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ MT4 conectado desde: 127.0.0.1:23849
+📡 Recibido de MT4: {
+  type: 'market',
+  symbol: 'EURUSD',
+  bid: '1.15519',
+  ask: '1.15529',
+  spread: 10,
+  digits: 5,
+  balance: '4309.28',
+  equity: '4401.32',
+  profit: '92.04',
+  margin: '89.92',
+  time: 1774987716
+}
+📡 Recibido de MT4: { type: 'ping', time: 1774987716 }
+💓 Heartbeat respondido
+✅ MT4 conectado desde: 127.0.0.1:6310
+📡 Recibido de MT4: {
+  type: 'market',
+  symbol: 'Bitcoin',
+  bid: '67986.76',
+  ask: '68013.25',
+  spread: 2649,
+  digits: 2,
+  balance: '4309.28',
+  equity: '4361.15',
+  profit: '51.87',
+  margin: '89.92',
+  time: 1774995050
+}
+📡 Recibido de MT4: {
+  type: 'market',
+  symbol: 'Bitcoin',
+  bid: '67986.75',
+  ask: '68013.24',
+  spread: 2649,
+  digits: 2,
+  balance: '4309.28',
+  equity: '4361.15',
+  profit: '51.87',
+  margin: '89.92',
+  time: 1774995050
+}
+📤 Comando enviado a MT4: {
+  type: 'alert',
+  message: '¡Hola desde la web!',
+  timestamp: '2026-03-31T19:11:06.588Z'
+}
+📡 Recibido de MT4: {
+  type: 'market',
+  symbol: 'Bitcoin',
+  bid: '67979.36',
+  ask: '68005.84',
+  spread: 2648,
+  digits: 2,
+  balance: '4309.28',
+  equity: '4357.25',
+  profit: '47.97',
+  margin: '89.92',
+  time: 1774995066
+}
