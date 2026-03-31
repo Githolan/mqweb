@@ -200,8 +200,8 @@ app.get('/', (req, res) => {
 // INICIAR SERVIDORES
 // ============================================================================
 
-const TCP_PORT = 8080;
-const HTTP_PORT = 3030;
+const TCP_PORT = process.env.TCP_PORT || 8080;
+const HTTP_PORT = process.env.HTTP_PORT || 3030;
 
 // Iniciar servidor TCP
 tcpServer.listen(TCP_PORT, '0.0.0.0', () => {
@@ -215,11 +215,17 @@ tcpServer.listen(TCP_PORT, '0.0.0.0', () => {
 
 // Iniciar servidor HTTP
 app.listen(HTTP_PORT, '0.0.0.0', () => {
+    const isProduction = process.env.NODE_ENV === 'production';
+    const hostUrl = isProduction ? process.env.HOST_URL || `http://localhost:${HTTP_PORT}` : `http://localhost:${HTTP_PORT}`;
+
     console.log(`🌐 Dashboard disponible en:`);
     console.log(`   - Local: http://localhost:${HTTP_PORT}`);
-    console.log(`   - Red: http://localhost:${HTTP_PORT}`);
+    if (isProduction) {
+        console.log(`   - Production: ${hostUrl}`);
+    }
     console.log('');
     console.log('✅ Servidor listo para recibir conexiones de MT4');
+    console.log(`📡 MT4 debe conectarse a TCP puerto ${TCP_PORT}`);
     console.log('');
     console.log('Press Ctrl+C to stop');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

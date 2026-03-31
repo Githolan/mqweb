@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+npm-debug.log
+pnpm-lock.yaml
+
+# Logs
+logs
+*.log
+
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# IDE
+.vscode
+.idea
+
+# Claude
+.claude
+
+# Local files
+.env.local
+*.local
+
+# Scripts
+Scripts
+
+# Agent rules
+.agent
