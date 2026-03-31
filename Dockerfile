@@ -5,8 +5,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --production
+# Install dependencies (use npm install since we use pnpm locally)
+RUN npm install --omit=dev
 
 # Copy application files
 COPY Examples/ ./Examples/
