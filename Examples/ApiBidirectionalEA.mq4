@@ -11,12 +11,12 @@
 //+------------------------------------------------------------------+
 //| Parámetros de entrada                                            |
 //+------------------------------------------------------------------+
-input string   SERVER_HOST        = "127.0.0.1";      // Server host or domain
-input int      SERVER_PORT        = 3030;             // Server port (443 for HTTPS)
-input bool     USE_HTTPS          = false;            // Use HTTPS (true for production)
-input int      SEND_INTERVAL      = 3;                // Seconds between data sends
-input int      POLL_INTERVAL      = 3;                // Seconds between command polls
-input bool     DEBUG_MODE         = true;             // Show debug messages
+input string   SERVER_HOST        = "mqweb.holancloud.com";  // Server host or domain
+input int      SERVER_PORT        = 443;                     // Server port (443 for HTTPS, 80 for HTTP)
+input bool     USE_HTTPS          = true;                    // Use HTTPS (true for production)
+input int      SEND_INTERVAL      = 3;                       // Seconds between data sends
+input int      POLL_INTERVAL      = 3;                       // Seconds between command polls
+input bool     DEBUG_MODE         = true;                    // Show debug messages
 
 //+------------------------------------------------------------------+
 //| Variables globales                                               |
@@ -37,11 +37,21 @@ int OnInit()
     Print("HTTPS: ", USE_HTTPS ? "Si" : "No");
     Print("========================================");
 
-    // Build base URL
+    // Build base URL (omit port for standard HTTPS/HTTP ports)
     if(USE_HTTPS)
-        g_baseUrl = "https://" + SERVER_HOST + ":" + IntegerToString(SERVER_PORT);
+    {
+        if(SERVER_PORT == 443)
+            g_baseUrl = "https://" + SERVER_HOST;
+        else
+            g_baseUrl = "https://" + SERVER_HOST + ":" + IntegerToString(SERVER_PORT);
+    }
     else
-        g_baseUrl = "http://" + SERVER_HOST + ":" + IntegerToString(SERVER_PORT);
+    {
+        if(SERVER_PORT == 80)
+            g_baseUrl = "http://" + SERVER_HOST;
+        else
+            g_baseUrl = "http://" + SERVER_HOST + ":" + IntegerToString(SERVER_PORT);
+    }
 
     Print("Base URL: ", g_baseUrl);
 
@@ -143,7 +153,7 @@ string HttpGet(string path)
     if(res == -1)
     {
         int errorCode = GetLastError();
-        string errorDesc = ErrorDescription(errorCode);
+        int errorDesc = errorCode;
         if(DEBUG_MODE)
         {
             Print("❌ WebRequest failed");
