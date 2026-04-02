@@ -12,18 +12,20 @@ RUN npm install --omit=dev
 COPY Examples/ ./Examples/
 
 # Environment variables
-ENV TCP_PORT=8080
-ENV HTTP_PORT=3030
 ENV NODE_ENV=production
+ENV SERVER_MODE=api
+ENV HTTP_PORT=3030
+ENV TCP_PORT=8080
 
-# Expose ports
-# 8080 - TCP server for MT4 connection
-# 3030 - HTTP dashboard
-EXPOSE 8080 3030
+# Expose HTTP port (API mode only needs 3030)
+# TCP port (8080) optional for TCP mode
+EXPOSE 3030 8080
 
-# Health check
+# Health check (uses HTTP port)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD node -e "require('http').get('http://localhost:3030/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})" || exit 1
 
-# Start server
-CMD ["node", "Examples/tcp-server.js"]
+# Start script - selects server based on SERVER_MODE
+COPY start-server.sh /start-server.sh
+RUN chmod +x /start-server.sh
+CMD ["/start-server.sh"]
