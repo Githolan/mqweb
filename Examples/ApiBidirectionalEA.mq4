@@ -153,12 +153,36 @@ string HttpGet(string path)
     if(res == -1)
     {
         int errorCode = GetLastError();
-        int errorDesc = errorCode;
+
         if(DEBUG_MODE)
         {
             Print("❌ WebRequest failed");
             Print("   Error code: ", errorCode);
-            Print("   Description: ", errorDesc);
+
+            // Error 5200 = URL not allowed
+            if(errorCode == 5200)
+            {
+                Print("   ⚠️ ERROR 5200: URL not in allowed list!");
+                Print("   ");
+                Print("   FIX: Add URL to MT4 whitelist:");
+                Print("   1. Tools → Options → Expert Advisors");
+                Print("   2. Find 'Allow WebRequest for the following URLs'");
+                Print("   3. Add: ", g_baseUrl);
+                Print("   4. Click OK and restart EA");
+
+                MessageBox(
+                    "Error 5200: URL not allowed for WebRequest\n\n" +
+                    "FIX:\n" +
+                    "1. Tools → Options → Expert Advisors\n" +
+                    "2. Add to 'Allow WebRequest for the following URLs':\n" +
+                    g_baseUrl + "\n" +
+                    "3. Click OK\n" +
+                    "4. Restart this EA\n\n" +
+                    "See SETUP.md for detailed instructions.",
+                    "WebRequest Configuration Required",
+                    MB_ICONWARNING | MB_OK
+                );
+            }
         }
         return "";
     }
