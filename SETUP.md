@@ -1,27 +1,5 @@
 # MQL4-WEB Setup Guide
 
-## ⚠️ HALLAZGO CRÍTICO: Orden de URLs en MT4
-
-**IMPORTANTE:** Si tienes error 5200 PERO la URL ya está agregada:
-
-### La URL debe ser la PRIMERA en la lista
-
-Se descubrió que MT4 puede requerir que la URL objetivo sea la **primera** URL en la lista de "Allow WebRequest for the following URLs".
-
-**Solución probada:**
-1. Tools → Options → Expert Advisors
-2. **Elimina TODAS** las URLs de la lista
-3. Agrega **PRIMERO** la URL del servidor:
-   ```
-   https://mqweb.holancloud.com
-   ```
-4. Agrega otras URLs después si las necesitas
-5. Click OK
-6. **Cierra MT4 completamente**
-7. **Abre MT4** y ejecuta el EA
-
----
-
 ## Configuración para API Polling (Recomendado para Producción)
 
 ### Paso 1: Configurar URLs Permitidas en MT4
@@ -32,14 +10,13 @@ Se descubrió que MT4 puede requerir que la URL objetivo sea la **primera** URL 
 2. Ve a **Tools → Options** (o presiona `Ctrl+O`)
 3. Selecciona la pestaña **Expert Advisors**
 4. Busca la sección **"Allow WebRequest for the following URLs"**
-5. **Elimina todas las URLs existentes**
-6. Haz clic en **Add** y agrega **COMO PRIMERA URL**:
+5. Haz clic en **Add** y agrega:
    ```
    https://mqweb.holancloud.com
    ```
-7. Haz clic en **OK**
-8. **Cierra MT4 completamente**
-9. **Abre MT4** y adjunta el EA
+6. Haz clic en **OK**
+7. **Cierra MT4 completamente y vuelve a abrirlo**
+8. Adjunta el EA
 
 ### Paso 2: Configurar Parámetros del EA
 
@@ -75,21 +52,18 @@ GET https://mqweb.holancloud.com/health
 
 **Causa:** La URL no está en la lista blanca de WebRequest.
 
-**Solución paso a paso:**
+**Solución:**
 1. Tools → Options → Expert Advisors
-2. **Elimina TODAS** las URLs de "Allow WebRequest for the following URLs"
-3. Agrega `https://mqweb.holancloud.com` como **PRIMERA** URL
-4. Click OK
-5. **Cierra MT4 completamente** (no solo minimizar)
-6. **Abre MT4**
-7. Adjunta el EA
+2. Agrega `https://mqweb.holancloud.com` a "Allow WebRequest for the following URLs"
+3. Click OK
+4. **Cierra MT4 completamente** (no solo minimizar)
+5. **Abre MT4** y adjunta el EA
 
-**⚠️ Si sigue fallando después de agregar la URL:**
+**⚠️ Si sigue fallando:**
 - Verifica que la URL sea exactamente: `https://mqweb.holancloud.com`
 - NO agregues puerto: `https://mqweb.holancloud.com:443` ❌
 - NO uses http: `http://mqweb.holancloud.com` ❌
-- La URL debe ser la **PRIMERA** en la lista
-- Ejecuta el script `DiagnosticWebRequest.mq4` para probar
+- Ejecuta `DiagnosticWebRequest.mq4` para probar conectividad
 
 ### Error 406: Not Acceptable
 
