@@ -167,6 +167,14 @@ app.post('/command', (req, res) => {
         return res.status(400).json({ success: false, error: 'type is required' });
     }
 
+    // Limit queue size to prevent memory issues
+    const MAX_COMMANDS = 100;
+    if (pendingCommands.length >= MAX_COMMANDS) {
+        // Remove oldest commands if queue is full
+        pendingCommands.splice(0, pendingCommands.length - MAX_COMMANDS + 1);
+        console.log('⚠️ Command queue full, removed oldest command');
+    }
+
     const command = {
         type: type,
         message: message || '',

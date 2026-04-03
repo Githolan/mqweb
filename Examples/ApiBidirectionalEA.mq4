@@ -94,6 +94,22 @@ void OnDeinit(const int reason)
 //+------------------------------------------------------------------+
 void OnTick()
 {
+    ProcessIntervals();
+}
+
+//+------------------------------------------------------------------+
+//| Timer event handler (backup if no ticks)                         |
+//+------------------------------------------------------------------+
+void OnTimer()
+{
+    ProcessIntervals();
+}
+
+//+------------------------------------------------------------------+
+//| Common interval processing (DRY)                                 |
+//+------------------------------------------------------------------+
+void ProcessIntervals()
+{
     if(!g_initialized)
         return;
 
@@ -105,28 +121,6 @@ void OnTick()
     }
 
     // Poll for commands periodically
-    if(TimeCurrent() - g_lastPollTime >= POLL_INTERVAL)
-    {
-        PollCommands();
-        g_lastPollTime = TimeCurrent();
-    }
-}
-
-//+------------------------------------------------------------------+
-//| Timer event handler                                              |
-//+------------------------------------------------------------------+
-void OnTimer()
-{
-    if(!g_initialized)
-        return;
-
-    // Also check in timer in case no ticks are coming
-    if(TimeCurrent() - g_lastSendTime >= SEND_INTERVAL)
-    {
-        SendMarketData();
-        g_lastSendTime = TimeCurrent();
-    }
-
     if(TimeCurrent() - g_lastPollTime >= POLL_INTERVAL)
     {
         PollCommands();
@@ -368,13 +362,5 @@ string ExtractJsonValue(string json, string key)
     }
 
     return "";
-}
-
-//+------------------------------------------------------------------+
-//| Helper function for minimum                                       |
-//+------------------------------------------------------------------+
-int MathMin(int a, int b)
-{
-    return (a < b) ? a : b;
 }
 //+------------------------------------------------------------------+
